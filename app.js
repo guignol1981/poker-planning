@@ -7,6 +7,7 @@ const io = require('socket.io')(server);
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
+app.get('/', (_, res) => res.send());
 app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'dist/index.html')));
 
 const room = {
