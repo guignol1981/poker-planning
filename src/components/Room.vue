@@ -19,7 +19,7 @@
             </m-modal>
 
             <span v-else>Vote en cours: {{ room.voting }}</span>
-            <div v-if="myPlayer.isAdmin">
+            <div v-if="myPlayer.isAdmin" class="m-u--margin-top">
                 <m-button @click="onSubmit">Soumettre</m-button>
 
                 <m-button
@@ -30,6 +30,11 @@
                 >
             </div>
         </m-message>
+        <chart
+            v-if="room.status === 'results'"
+            :styles="chartStyle"
+            :results="room.results"
+        ></chart>
         <div class="room__content">
             <div class="room__card-grid">
                 <m-panel
@@ -75,11 +80,6 @@
                 </ul>
             </div>
         </div>
-        <chart
-            v-if="room.status === 'results'"
-            :styles="chartStyle"
-            :results="room.results"
-        ></chart>
     </div>
 </template>
 

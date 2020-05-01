@@ -1,7 +1,11 @@
 {
     "name": "poker-planning",
     "version": "0.1.0",
+    "engines": {
+        "node": "12.16.1"
+    },
     "private": true,
+    "main": "app.js",
     "scripts": {
         "start": "node app.js",
         "dev": "concurrently --kill-others \"vue-cli-service build --watch --mode http\" \"nodemon app.js\"",

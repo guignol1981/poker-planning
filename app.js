@@ -4,10 +4,13 @@ const http = require('http');
 const server = http.createServer(app);
 const path = require('path');
 const io = require('socket.io')(server);
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get('/', (_, res) => res.send());
 app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'dist/index.html')));
 
 const room = {
@@ -83,7 +86,6 @@ io.on('connection', socket => {
                 console.log('acc', acc);
                 console.log('cur', cur);
                 acc.datasets[0].data[acc.labels.indexOf(cur.vote)]++;
-                acc.datasets[0].label += cur.name + ', ';
                 return acc;
             },
             {
