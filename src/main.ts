@@ -6,7 +6,7 @@ import { ModulComponentPlugin, FrenchPlugin } from '@ulaval/modul-components';
 import '@ulaval/modul-components/dist/modul.min.css';
 import io from 'socket.io-client';
 
-Vue.prototype.$socket = io(process.env.BASE_URL);
+Vue.prototype.$socket = io();
 
 Vue.use(ModulComponentPlugin);
 Vue.use(FrenchPlugin);

@@ -82,9 +82,7 @@ io.on('connection', socket => {
     socket.on('vote submited', () => {
         room.status = 'results';
         room.results = room.players.reduce(
-            (acc, cur, index) => {
-                console.log('acc', acc);
-                console.log('cur', cur);
+            (acc, cur) => {
                 acc.datasets[0].data[acc.labels.indexOf(cur.vote)]++;
                 return acc;
             },

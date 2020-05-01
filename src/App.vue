@@ -12,7 +12,7 @@
 </script>
 
 <style lang="scss">
-    $m-font-path: '~@ulaval/modul-components/dist/assets/fonts/'; //this is required.
+    $m-font-path: '~@ulaval/modul-components/dist/assets/fonts/';
 
     @import '~@ulaval/modul-components/dist/styles/main.scss';
 
