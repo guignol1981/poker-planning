@@ -27,7 +27,7 @@ io.on('connection', socket => {
 
         room.players.splice(room.players.map(p => p.id).indexOf(socket.id), 1);
 
-        if (room.players.find(p => p.isAdmin && room.players.length)) {
+        if (!room.players.find(p => p.isAdmin) && !!room.players.length) {
             room.players[0].isAdmin = true;
         }
 
