@@ -49,11 +49,10 @@ io.on('connection', socket => {
 
     socket.on('disconnect', event => {
         console.log('user disconnected');
-        if (!event || !event.roomId) {
-            return;
-        }
 
-        const room = rooms.find(r => r.id === event.roomId);
+        const room = rooms.find(r =>
+            r.players.map(p => p.id).includes(socket.id)
+        );
         const player = room.players.find(p => p.id === socket.id);
 
         room.players.splice(room.players.map(p => p.id).indexOf(socket.id), 1);
