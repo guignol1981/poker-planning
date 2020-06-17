@@ -17,6 +17,18 @@ app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'dist/index.html')));
 
 const rooms = [];
 
+setInterval(() => {
+    const indexes = [];
+
+    rooms.forEach((r, i) => {
+        if (!r.players.length) {
+            indexes.push(i);
+        }
+    });
+
+    for (let i = rooms.length - 1; i >= 0; i--) rooms.splice(rooms[i], 1);
+}, 1000);
+
 io.on('connection', socket => {
     console.log('a user connected');
 
