@@ -27,7 +27,7 @@ setInterval(() => {
     });
 
     for (let i = indexes.length - 1; i >= 0; i--) rooms.splice(indexes[i], 1);
-}, 1000);
+}, 1000 * 60 * 5);
 
 io.on('connection', socket => {
     console.log('a user connected');
