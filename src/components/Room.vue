@@ -129,6 +129,10 @@
                 this.room = event.room;
                 this.players = event.room.players;
             });
+
+            (this as any).$socket.on('404', () => {
+                this.$router.push({ name: 'Lobby' });
+            });
         }
 
         public get myPlayer(): any {

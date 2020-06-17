@@ -48,6 +48,11 @@ io.on('connection', socket => {
     socket.on('room joined', event => {
         const room = rooms.find(r => r.id === event.roomId);
 
+        if (!room) {
+            io.to(socket.id).emit('404');
+            return;
+        }
+
         room.players.push({
             isAdmin: !room.players.length,
             name: randomName.first(),
