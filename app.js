@@ -26,7 +26,7 @@ setInterval(() => {
         }
     });
 
-    for (let i = rooms.length - 1; i >= 0; i--) rooms.splice(rooms[i], 1);
+    for (let i = indexes.length - 1; i >= 0; i--) rooms.splice(indexes[i], 1);
 }, 1000);
 
 io.on('connection', socket => {
