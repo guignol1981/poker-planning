@@ -104,11 +104,18 @@
         };
         public newNameSelectionOpen: boolean = false;
         public nouveauVoteEnCoursOpen: boolean = false;
+        public updateRoomCallback: Function | null = null;
 
         protected created(): void {
-            (this as any).$socket.emit('joined');
-
             (this as any).$socket.on('room updated', (event: any) => {
+                if (this.newNameSelectionOpen || this.nouveauVoteEnCoursOpen) {
+                    this.updateRoomCallback = (event: any) => {
+                        this.room = event.room;
+                        this.players = event.room.players;
+                        this.updateRoomCallback = null;
+                    };
+                }
+
                 this.room = event.room;
                 this.players = event.room.players;
             });
@@ -146,6 +153,9 @@
             });
 
             this.newNameSelectionOpen = false;
+            if (this.updateRoomCallback) {
+                this.updateRoomCallback();
+            }
         }
 
         public onVotingChange(): void {
@@ -154,6 +164,10 @@
             });
 
             this.nouveauVoteEnCoursOpen = false;
+
+            if (this.updateRoomCallback) {
+                this.updateRoomCallback();
+            }
         }
 
         public onReset(): void {

@@ -5,6 +5,7 @@ const server = http.createServer(app);
 const path = require('path');
 const io = require('socket.io')(server);
 const bodyParser = require('body-parser');
+const randomName = require('random-name');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -22,26 +23,26 @@ const room = {
 io.on('connection', socket => {
     console.log('a user connected');
 
+    room.players.push({
+        isAdmin: !room.players.length,
+        name: randomName.first(),
+        id: socket.id
+    });
+
+    io.emit('room updated', { room });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
 
+        const player = room.players.find(p => p.id === socket.id);
+
         room.players.splice(room.players.map(p => p.id).indexOf(socket.id), 1);
 
-        if (!room.players.find(p => p.isAdmin) && !!room.players.length) {
-            room.players[0].isAdmin = true;
+        if (player.isAdmin && !!room.players.length) {
+            room.players[
+                Math.floor(Math.random() * room.players.length)
+            ].isAdmin = true;
         }
-
-        io.emit('room updated', { room });
-    });
-
-    socket.on('joined', () => {
-        const name = 'Player #' + (room.players.length + 1);
-
-        room.players.push({
-            isAdmin: !room.players.length,
-            name: name,
-            id: socket.id
-        });
 
         io.emit('room updated', { room });
     });
