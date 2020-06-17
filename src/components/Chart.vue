@@ -1,11 +1,11 @@
 <script lang="ts">
     import Vue from 'vue';
     import Component from 'vue-class-component';
-    import { HorizontalBar } from 'vue-chartjs';
+    import { Bar } from 'vue-chartjs';
     import { Prop } from 'vue-property-decorator';
 
     @Component({
-        extends: HorizontalBar
+        extends: Bar
     })
     export default class Chart extends Vue {
         @Prop({ default: () => ({}) })

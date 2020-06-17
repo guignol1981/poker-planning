@@ -106,6 +106,17 @@ io.on('connection', socket => {
             }
         );
 
+        room.results.labels = room.results.labels.map(l => {
+            return (
+                l.toString() +
+                ': ' +
+                room.players
+                    .filter(p => p.vote === l)
+                    .map(p => p.name)
+                    .join(', ')
+            );
+        });
+
         io.emit('room updated', { room });
     });
 });
