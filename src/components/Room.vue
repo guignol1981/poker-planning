@@ -98,15 +98,23 @@
         public room: any = {};
         public players: any = [];
         public values: number[] = [0.5, 1, 2, 3, 5, 8, 13];
+
         public chartStyle = {
             height: `${500}px`,
             position: 'relative'
         };
+
         public newNameSelectionOpen: boolean = false;
         public nouveauVoteEnCoursOpen: boolean = false;
         public updateRoomCallback: Function | null = null;
 
         protected created(): void {
+            (this as any).$socket.emit('room joined', {
+                roomId: this.$route.params.id
+            });
+
+            // (this as any).$socket.join(this.$route.params.id);
+
             (this as any).$socket.on('room updated', (event: any) => {
                 if (this.newNameSelectionOpen || this.nouveauVoteEnCoursOpen) {
                     this.updateRoomCallback = (event: any) => {
@@ -114,6 +122,8 @@
                         this.players = event.room.players;
                         this.updateRoomCallback = null;
                     };
+
+                    return;
                 }
 
                 this.room = event.room;
@@ -139,17 +149,21 @@
             this.myPlayer.vote = value;
 
             (this as any).$socket.emit('player updated', {
-                player: this.myPlayer
+                player: this.myPlayer,
+                roomId: this.$route.params.id
             });
         }
 
         public onSubmit(): void {
-            (this as any).$socket.emit('vote submited');
+            (this as any).$socket.emit('vote submited', {
+                roomId: this.$route.params.id
+            });
         }
 
         public onNameChange(): void {
             (this as any).$socket.emit('player updated', {
-                player: this.myPlayer
+                player: this.myPlayer,
+                roomId: this.$route.params.id
             });
 
             this.newNameSelectionOpen = false;
@@ -171,7 +185,9 @@
         }
 
         public onReset(): void {
-            (this as any).$socket.emit('reset');
+            (this as any).$socket.emit('reset', {
+                roomId: this.$route.params.id
+            });
         }
     }
 </script>

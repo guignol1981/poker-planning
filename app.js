@@ -6,6 +6,7 @@ const path = require('path');
 const io = require('socket.io')(server);
 const bodyParser = require('body-parser');
 const randomName = require('random-name');
+const { v4: uuidv4 } = require('uuid');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -14,26 +15,45 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'dist/index.html')));
 
-const room = {
-    voting: 'non définie',
-    status: 'voting',
-    players: []
-};
+const rooms = [];
 
 io.on('connection', socket => {
     console.log('a user connected');
 
-    room.players.push({
-        isAdmin: !room.players.length,
-        name: randomName.first(),
-        id: socket.id
+    socket.on('new room', () => {
+        const roomId = uuidv4();
+
+        rooms.push({
+            id: roomId,
+            voting: 'non définie',
+            status: 'voting',
+            players: []
+        });
+
+        io.to(socket.id).emit('room created', { roomId });
     });
 
-    io.emit('room updated', { room });
+    socket.on('room joined', event => {
+        const room = rooms.find(r => r.id === event.roomId);
 
-    socket.on('disconnect', () => {
+        room.players.push({
+            isAdmin: !room.players.length,
+            name: randomName.first(),
+            id: socket.id
+        });
+
+        socket.join(event.roomId);
+
+        io.to(event.roomId).emit('room updated', { room });
+    });
+
+    socket.on('disconnect', event => {
         console.log('user disconnected');
+        if (!event || !event.roomId) {
+            return;
+        }
 
+        const room = rooms.find(r => r.id === event.roomId);
         const player = room.players.find(p => p.id === socket.id);
 
         room.players.splice(room.players.map(p => p.id).indexOf(socket.id), 1);
@@ -44,10 +64,12 @@ io.on('connection', socket => {
             ].isAdmin = true;
         }
 
-        io.emit('room updated', { room });
+        io.to(event.roomId).emit('room updated', { room });
     });
 
     socket.on('player updated', event => {
+        const room = rooms.find(r => r.id === event.roomId);
+
         if (!room.players.find(p => p.id === socket.id)) {
             return;
         }
@@ -58,18 +80,22 @@ io.on('connection', socket => {
             event.player
         );
 
-        io.emit('room updated', { room });
+        io.to(event.roomId).emit('room updated', { room });
     });
 
     socket.on('room updated', event => {
+        const room = rooms.find(r => r.id === event.room.id);
+
         delete event.room.players;
 
         Object.assign(room, event.room);
 
-        io.emit('room updated', { room });
+        io.to(event.roomId).emit('room updated', { room });
     });
 
-    socket.on('reset', () => {
+    socket.on('reset', event => {
+        const room = rooms.find(r => r.id === event.roomId);
+
         Object.assign(room, {
             voting: 'non définie',
             status: 'voting'
@@ -77,10 +103,12 @@ io.on('connection', socket => {
 
         room.players.forEach(p => (p.vote = 0));
 
-        io.emit('room updated', { room });
+        io.to(event.roomId).emit('room updated', { room });
     });
 
-    socket.on('vote submited', () => {
+    socket.on('vote submited', event => {
+        const room = rooms.find(r => r.id === event.roomId);
+
         room.status = 'results';
         room.results = room.players.reduce(
             (acc, cur) => {
@@ -118,7 +146,7 @@ io.on('connection', socket => {
             );
         });
 
-        io.emit('room updated', { room });
+        io.to(event.roomId).emit('room updated', { room });
     });
 });
 
