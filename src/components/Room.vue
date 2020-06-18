@@ -27,7 +27,8 @@
                     >
                 </m-modal>
 
-                <span v-else>Vote en cours: {{ room.voting }}</span>
+                <p v-else>Vote en cours: {{ room.voting }}</p>
+
                 <div v-if="myPlayer.isAdmin" class="m-u--margin-top">
                     <m-button
                         @click="onSubmit"
@@ -42,6 +43,7 @@
                         >Nouveau</m-button
                     >
                 </div>
+
                 <m-link
                     class="m-u--margin-top"
                     mode="button"
