@@ -1,35 +1,55 @@
 <template>
     <div class="room" v-if="myPlayer">
-        <m-message state="information" class="room__informations">
-            <m-modal
-                v-if="myPlayer.isAdmin"
-                title="Nouveau vote en cours"
-                :open.sync="nouveauVoteEnCoursOpen"
-            >
-                <m-textfield
-                    v-model="room.voting"
-                    label="Vote en cours"
-                ></m-textfield>
-                <m-link slot="trigger" mode="button"
-                    >Vote en cours: {{ room.voting }}</m-link
+        <div class="leave-room-button">
+            <m-button skin="secondary" @click="onLeaveRoomClicked()">
+                leave
+            </m-button>
+        </div>
+        <div>
+            <m-message state="information" class="room__informations">
+                <m-modal
+                    v-if="myPlayer.isAdmin"
+                    title="Nouveau vote en cours"
+                    :open.sync="nouveauVoteEnCoursOpen"
                 >
-                <m-button slot="footer" @click="onVotingChange"
-                    >Soumettre</m-button
-                >
-            </m-modal>
+                    <m-textfield
+                        v-model="room.voting"
+                        label="Vote en cours"
+                    ></m-textfield>
+                    <m-link slot="trigger" mode="button"
+                        >Vote en cours: {{ room.voting }}</m-link
+                    >
+                    <m-button
+                        slot="footer"
+                        @click="onVotingChange"
+                        :disabled="room.status === 'results'"
+                        >Soumettre</m-button
+                    >
+                </m-modal>
 
-            <span v-else>Vote en cours: {{ room.voting }}</span>
-            <div v-if="myPlayer.isAdmin" class="m-u--margin-top">
-                <m-button @click="onSubmit">Soumettre</m-button>
+                <span v-else>Vote en cours: {{ room.voting }}</span>
+                <div v-if="myPlayer.isAdmin" class="m-u--margin-top">
+                    <m-button
+                        @click="onSubmit"
+                        :disabled="room.status === 'results'"
+                        >Soumettre</m-button
+                    >
 
-                <m-button
-                    skin="secondary"
-                    class="m-u--margin-left"
-                    @click="onReset"
-                    >Nouveau</m-button
+                    <m-button
+                        skin="secondary"
+                        class="m-u--margin-left"
+                        @click="onReset"
+                        >Nouveau</m-button
+                    >
+                </div>
+                <m-link
+                    class="m-u--margin-top"
+                    mode="button"
+                    @click="onCopyLinkClicked()"
+                    >Copier lien de la partie</m-link
                 >
-            </div>
-        </m-message>
+            </m-message>
+        </div>
         <chart
             v-if="room.status === 'results'"
             :styles="chartStyle"
@@ -193,6 +213,23 @@
                 roomId: this.$route.params.id
             });
         }
+
+        public onLeaveRoomClicked(): void {
+            this.$router.push({ name: 'Lobby' });
+        }
+
+        public onCopyLinkClicked(): void {
+            const url = window.location.href;
+            const textArea = document.createElement('textarea');
+            document.body.appendChild(textArea);
+            textArea.value = url;
+
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); /*For mobile devices*/
+            document.execCommand('copy');
+
+            document.body.removeChild(textArea);
+        }
     }
 </script>
 
@@ -200,6 +237,8 @@
     @import '~@ulaval/modul-components/dist/styles/commons';
 
     .room {
+        position: relative;
+
         &__content {
             width: 100%;
             display: flex;
@@ -238,5 +277,11 @@
             position: relative;
             height: 200px;
         }
+    }
+
+    .leave-room-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
     }
 </style>

@@ -1,5 +1,9 @@
 <template>
     <div>
+        <img
+            src="https://landportal.org/sites/landportal.org/files/styles/220heightmax/public/logo-universite-laval-couleur-transparent.png?itok=NyicaP6B"
+            alt=""
+        />
         <m-button @click="onNouvellePartieClicked()">Nouvelle partie!</m-button>
     </div>
 </template>

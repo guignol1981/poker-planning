@@ -15,7 +15,14 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'dist/index.html')));
 
-const rooms = [];
+const rooms = [
+    {
+        id: 'test-room',
+        voting: 'non définie',
+        status: 'voting',
+        players: []
+    }
+];
 
 setInterval(() => {
     const indexes = [];
@@ -70,6 +77,11 @@ io.on('connection', socket => {
         const room = rooms.find(r =>
             r.players.map(p => p.id).includes(socket.id)
         );
+
+        if (!room) {
+            return;
+        }
+
         const player = room.players.find(p => p.id === socket.id);
 
         room.players.splice(room.players.map(p => p.id).indexOf(socket.id), 1);
