@@ -229,6 +229,9 @@
             document.execCommand('copy');
 
             document.body.removeChild(textArea);
+            this.$toast.show({
+                text: 'Lien copié!'
+            });
         }
     }
 </script>
