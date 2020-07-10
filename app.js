@@ -144,7 +144,7 @@ io.on('connection', socket => {
                 return acc;
             },
             {
-                labels: [0.5, 1, 2, 3, 5, 8, 13],
+                labels: [0, 1, 2, 3, 5, 8, 13],
                 datasets: [
                     {
                         label: 'Résultats',

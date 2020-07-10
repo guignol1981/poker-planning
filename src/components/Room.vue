@@ -59,15 +59,14 @@
         ></chart>
         <div class="room__content">
             <div class="room__card-grid">
-                <m-panel
+                <playing-card
                     v-for="(value, index) in values"
                     :key="index"
-                    :highlighted="isSelectedVote(value)"
-                    shadow="true"
+                    :selected="isSelectedVote(value)"
                     @click="onVote(value)"
+                    :value="value"
                 >
-                    <h1 class="room__card-grid__item">{{ value }}</h1>
-                </m-panel>
+                </playing-card>
             </div>
             <div class="room__players">
                 <ul>
@@ -110,16 +109,18 @@
     import Vue from 'vue';
     import Component from 'vue-class-component';
     import Chart from './Chart.vue';
+    import PlayingCard from './playing-card/PlayingCard.vue';
 
     @Component({
         components: {
-            Chart
+            Chart,
+            PlayingCard
         }
     })
     export default class Room extends Vue {
         public room: any = {};
         public players: any = [];
-        public values: number[] = [0.5, 1, 2, 3, 5, 8, 13];
+        public values: number[] = [0, 1, 2, 3, 5, 8, 13];
 
         public chartStyle = {
             height: `${500}px`,
