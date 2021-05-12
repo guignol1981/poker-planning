@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "@ulaval/modul-components": "^1.1.5",
-        "chart.js": "^2.9.3",
+        "chart.js": "^2.9.4",
         "concurrently": "^5.2.0",
         "core-js": "^3.6.4",
         "express": "^4.17.1",
