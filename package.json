@@ -1,6 +1,9 @@
 {
     "name": "poker-planning",
     "version": "0.1.0",
+    "engines": {
+        "node": "18"
+    },
     "private": true,
     "main": "app.js",
     "scripts": {
